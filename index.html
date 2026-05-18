@@ -17,29 +17,62 @@
         </header>
 
         <main id="main-content">
-            <div class="glass-card upload-section">
-                <h2>1단계: 학생 명렬표 업로드</h2>
-                <p>A열(반), B열(번호), C열(이름), D열(성별)로 구성된 엑셀 파일을 올려주세요. <br><span class="highlight">파일은 서버로 전송되지 않으며 스마트폰/PC 안에서 안전하게 처리됩니다.</span></p>
+            <!-- 로딩 화면 -->
+            <div class="glass-card text-center" id="loading-section">
+                <h2>데이터를 불러오는 중...</h2>
+                <p>잠시만 기다려주세요.</p>
+            </div>
+
+            <!-- 메인 홈 (명단이 있을 때) -->
+            <div class="glass-card hidden" id="home-section" style="text-align: center;">
+                <h2>무엇을 하시겠습니까?</h2>
+                <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                    <button class="primary-button" id="btn-show-new-event">✨ 새로운 출결 이벤트 시작</button>
+                    <button class="primary-button outline" id="btn-show-join-event">👥 기존 출결 이벤트 참여</button>
+                </div>
+            </div>
+
+            <!-- 새 이벤트 생성 화면 -->
+            <div class="glass-card hidden" id="new-event-section">
+                <h2>새 출결 이벤트 생성</h2>
+                <p>이번 출결 점검의 이름을 입력해주세요.<br>(예: 에버랜드 도착, 1일차 숙소 점호 등)</p>
+                <input type="text" id="new-event-name" class="glass-select" style="width:100%; margin-bottom: 20px; padding: 15px;" placeholder="이벤트 이름 입력">
+                <div style="display: flex; gap: 10px;">
+                    <button class="primary-button outline" id="btn-cancel-new-event">취소</button>
+                    <button class="primary-button" id="btn-create-event">생성 및 시작</button>
+                </div>
+            </div>
+
+            <!-- 초기 명단 업로드 (명단이 없을 때) -->
+            <div class="glass-card upload-section hidden" id="setup-section">
+                <h2>초기 설정: 학생 명렬표 업로드</h2>
+                <p>A열(반), B열(번호), C열(이름), D열(성별)로 구성된 엑셀 파일을 올려주세요. <br><span class="highlight">한 번 업로드하면 이후에는 다시 올릴 필요가 없습니다.</span></p>
                 
-                <div class="file-drop-area" id="file-drop-area">
+                <div class="file-drop-area" id="setup-file-drop-area">
                     <span class="file-icon">📊</span>
                     <span class="file-message">여기를 터치하거나 엑셀 파일을 끌어다 놓으세요</span>
-                    <input class="file-input" type="file" id="excel-file" accept=".xlsx, .xls">
+                    <input class="file-input" type="file" id="setup-excel-file" accept=".xlsx, .xls">
                 </div>
             </div>
 
             <div class="glass-card result-section hidden" id="result-section">
-                <h2>명단 불러오기 성공! 🎉</h2>
+                <h2>명단 업데이트 성공! 🎉</h2>
                 <div id="class-list-container" class="class-grid">
                     <!-- Classes will be injected here -->
                 </div>
-                <button class="primary-button" id="start-attendance-btn">출결 관리 시작하기</button>
+                <button class="primary-button" id="btn-finish-setup">확인</button>
             </div>
 
             <div class="dashboard-container hidden" id="dashboard-section">
-                <div class="tabs">
+                <div class="tabs" style="margin-bottom: 10px;">
                     <button class="tab-btn active" data-target="grade-view">학년 전체 현황</button>
                     <button class="tab-btn" data-target="class-view">우리 반 출결 체크</button>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button class="primary-button" id="btn-dash-new-event" style="flex:1; min-width:30%; padding: 10px; font-size: 0.85rem;">새 이벤트 시작</button>
+                    <button class="primary-button outline" id="btn-dash-join-event" style="flex:1; min-width:30%; padding: 10px; font-size: 0.85rem;">이벤트 참여</button>
+                    <button class="primary-button" id="btn-dash-manage-event" style="flex:1; min-width:30%; background: #10b981; padding: 10px; font-size: 0.85rem;">이벤트 관리</button>
                 </div>
 
                 <!-- 학년 전체 현황 뷰 -->
@@ -48,9 +81,22 @@
                         <h2>전체 미도착/결석 현황</h2>
                         <span class="total-absent-badge" id="total-absent-count">총 0명 미도착</span>
                     </div>
-                    <p class="subtitle">반을 터치하면 상세 미도착자 명단을 볼 수 있습니다.</p>
+                    <p class="subtitle" id="dashboard-event-title" style="color:var(--primary-color); font-weight:bold; margin-bottom:10px!important;"></p>
+                    <p class="subtitle" style="margin-bottom:20px!important;">반을 터치하면 상세 미도착자 명단을 볼 수 있습니다.</p>
                     <div id="grade-summary-grid" class="grade-grid">
                         <!-- Class summary cards will be injected here -->
+                    </div>
+                    
+                    <hr style="border:0; border-top:1px solid var(--card-border); margin: 30px 0;">
+                    
+                    <div class="update-list-section">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 10px;">전출입 학생 명단 업데이트</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">명단이 변경되었을 때만 새 엑셀 파일을 업로드하세요.</p>
+                        <div class="file-drop-area" id="update-file-drop-area" style="padding: 20px 10px; min-height: 100px;">
+                            <span class="file-icon" style="font-size: 2rem;">🔄</span>
+                            <span class="file-message" style="font-size: 0.9rem;">여기를 터치하여 엑셀 업로드</span>
+                            <input class="file-input" type="file" id="update-excel-file" accept=".xlsx, .xls">
+                        </div>
                     </div>
                 </div>
 
@@ -86,6 +132,34 @@
             <button class="primary-button outline mt-4" id="close-modal-btn">닫기</button>
         </div>
     </div>
+    
+    <!-- 기존 이벤트 참여 모달 -->
+    <div class="modal-overlay hidden" id="join-event-modal">
+        <div class="glass-card modal-content" style="max-height: 80vh; display: flex; flex-direction: column;">
+            <h3>진행 중인 출결 이벤트</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">참여할 이벤트를 선택하세요.</p>
+            <div id="event-list-container" class="modal-list" style="flex:1; overflow-y:auto;">
+                <!-- Events injected here -->
+            </div>
+            <button class="primary-button outline mt-4" id="close-join-modal-btn">취소</button>
+        </div>
+    </div>
+
+    <!-- 이벤트 관리 모달 -->
+    <div class="modal-overlay hidden" id="manage-event-modal">
+        <div class="glass-card modal-content" style="max-height: 80vh; display: flex; flex-direction: column;">
+            <h3>이벤트 관리</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">진행 중인 이벤트를 삭제할 수 있습니다.</p>
+            <div id="manage-event-list-container" class="modal-list" style="flex:1; overflow-y:auto;">
+                <!-- Events injected here -->
+            </div>
+            <button class="primary-button outline mt-4" id="close-manage-modal-btn">닫기</button>
+        </div>
+    </div>
+    
+    <!-- Firebase Compat 라이브러리 추가 (로컬 파일 실행 지원) -->
+    <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore-compat.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

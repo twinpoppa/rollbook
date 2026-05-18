@@ -138,6 +138,10 @@ header p {
     display: none !important;
 }
 
+.text-center {
+    text-align: center;
+}
+
 .class-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -356,8 +360,9 @@ header p {
 }
 
 .student-card .num {
-    font-size: 0.8rem;
-    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-color);
     margin-bottom: 4px;
     display: block;
 }
@@ -420,6 +425,33 @@ header p {
 
 .modal-list-item:last-child {
     border-bottom: none;
+}
+
+.event-list-item {
+    padding: 15px;
+    border-bottom: 1px solid var(--card-border);
+    cursor: pointer;
+    transition: background 0.2s;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    background: rgba(255,255,255,0.1);
+}
+
+.event-list-item:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.event-list-item .event-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: block;
+}
+
+.event-list-item .event-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    display: block;
 }
 
 .mt-4 { margin-top: 1rem; }
